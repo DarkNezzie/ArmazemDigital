@@ -37,6 +37,12 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </form>
+        {{#if error}}
+            <h4 class="alert alert-danger mt-4">{{error}}</h4>
+        {{/if}}
+        {{#if success}}
+            <h4 class="alert alert-success mt-4">{{success}}</h4>
+        {{/if}}
     <div class="container-fluid" style="padding: 50px">
         <div class="row">
             <div class="col">

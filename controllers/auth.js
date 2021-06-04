@@ -104,29 +104,43 @@ exports.data = (req, res) => {
     
 }
 
-exports.adicionarEquipamento = (req, res) => {
-    
-    console.log(req.body);
+exports.adicionarEquipamento = async (req, res) => {
     const {sap, rfid_id} = req.body; //destructuring
 
-    
-    return res.render('adicionarEquipamento');
-    //db.query('SELECT * FROM Equipamento', (error, results)=>{
-       
-        //if(error){
-         //   console.log(error);
-      //  }
-        
-        //console.log(results);
-        //const data = JSON.parse(JSON.stringify(results));
-        //console.log(data);
-        //const data = "Hello";
-        //return res.render('dashboard');
-        
-        //buildTable(data);
-        
-
-    //});
+    console.log("SAP: "+ sap + "\nRFID: "+rfid_id);
+    //verificar sap na listagem
+    var resultadoSAP = await func.sapSearch(sap);
+    if(resultadoSAP == false){
+        res.status(400).render('adicionarEquipamento',{ 
+            error: 'SAP não encontrado na Base de dados'
+        })
+        return 0;
+    }
+    //verificar se existe um equipamento inserido com o mesmo sap
+    var resultadoEquipamento = await func.equipamentoSearchSAP(sap);
+    console.log(resultadoEquipamento);
+    if(resultadoEquipamento == true){
+        res.status(400).render('adicionarEquipamento',{ 
+            error: 'Equipamento já inserido'
+        })
+        return 0;
+    }
+    //verificar se o rfid já está em uso
+    var resultadoRfid = await func.equipamentoSearch(rfid_id);
+    console.log(resultadoRfid);
+    if(resultadoRfid == true){
+        res.status(400).render('adicionarEquipamento',{ 
+            error: 'RFID em uso'
+        })
+        return 0;
+    }
+    console.log("fazer a inserção");
+    await func.inserirEquipamento(rfid_id,sap,resultadoSAP[0].denominacao,resultadoSAP[0].classe,resultadoSAP[0].sub_classe,1,resultadoSAP[0].n_serie,1);
+    //inserir novo equipamento FALTAAA
+    //console.log("incerção feita");
+    res.status(200).render('adicionarEquipamento',{ 
+        success: 'Dados Inseridos com Sucesso'
+    })
     
 }
 

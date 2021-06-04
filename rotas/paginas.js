@@ -42,8 +42,8 @@ router.get("/data",verifyJWT,data, (req, res) => {
     res.render(data);
 });
 
-router.get("/adicionarEquipamento",verifyJWT,adicionarEquipamento, (req, res) => {
-    res.render(adicionarEquipamento);
+router.get("/adicionarEquipamento",verifyJWT, (req, res) => {
+    res.render("adicionarEquipamento");
 });
 
 router.post("/postdata", postdata, (req, res) => {

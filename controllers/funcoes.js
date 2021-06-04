@@ -47,6 +47,27 @@ function equipamentoSearch(eq_id){
     })
 }
 
+function equipamentoSearchSAP(sap){
+    return new Promise((resolve, reject) => {
+        db.query('SELECT sap FROM Equipamento WHERE sap = ?', sap, function(err, result) {
+            if (err) {
+                console.log(err);
+
+                return reject(err);
+            }
+            
+            //verifica se o resultado é vazio
+            var verifica = ifExists(result);
+
+            if(verifica == false){
+                
+                return resolve(false);
+            }
+            resolve(verifica)
+        })
+    })
+}
+
 function inserirLog(eq_id,estadoVida,resultadoTecnico,id_local,data,id_Sensor){
     db.query('INSERT INTO logoperacoes (eq_id, estado_Vida, n_Colaborador, id_local, date, id_Sensor) VALUES (?,?,?,?,?,?)',[eq_id,estadoVida,resultadoTecnico,id_local,data,id_Sensor], (error, results)=>{
        
@@ -78,7 +99,7 @@ function updateEVEquipamento(value,eq_id){
                 console.log(err);
                 return reject(err);
             }
-                console.log("estado de vida de " + eq_id + " mudado para "+value);
+                console.log("Estado de vida do equipamento: " + eq_id + " mudado para "+ value);
                 resolve(result)
         })
     })
@@ -92,7 +113,7 @@ function updateLocalEquipamento(id_local,eq_id){
                 console.log(err);
                 return reject(err);
             }
-                console.log("local de " + eq_id + " mudado para "+id_local);
+                console.log("Local do equipamento: " + eq_id + " mudado para "+ id_local);
                 resolve(result)
         })
     })
@@ -116,6 +137,45 @@ function getDate(){
     return dateStr;
 }
 
+function sapSearch(sap){
+    return new Promise((resolve, reject) => {
+        db.query('SELECT n_serie,material,denominacao,equipamento,classe,sub_classe FROM listagem WHERE material = ?', sap, function(err, result) {
+            if (err) {
+                console.log(err);
+
+                return reject(err);
+            }
+            //console.log(result);
+            var verifica = ifExists(result);
+            //console.log(verifica);
+            if(verifica == false){
+                return resolve(false);
+            }
+                resolve(result)
+        })
+    })
+}
+
+function inserirEquipamento(rfid_id,sap,denominacao,classe,sub_classe,estado_Vida,n_serie,id_local){
+    return new Promise((resolve, reject) => {
+        db.query('INSERT INTO Equipamento (eq_id,sap,denominacao,classe,sub_classe,estado_Vida,n_serie,id_local) VALUES (?,?,?,?,?,?,?,?)', [rfid_id,sap,denominacao,classe,sub_classe,estado_Vida,n_serie,id_local], function(err, result) {
+            if (err) {
+                console.log(err);
+                return reject(err);
+            }
+                
+                resolve(result)
+        })
+    })
+}
+
+
+
+
+
+
+
+
 module.exports.inserirLog = inserirLog;
 module.exports.equipamentoSearch = equipamentoSearch;
 module.exports.estadoVida = estadoVida;
@@ -123,4 +183,7 @@ module.exports.tecnicoSearch = tecnicoSearch;
 module.exports.updateEVEquipamento = updateEVEquipamento;
 module.exports.updateLocalEquipamento = updateLocalEquipamento;
 module.exports.getDate = getDate;
+module.exports.sapSearch = sapSearch;
+module.exports.inserirEquipamento = inserirEquipamento;
+module.exports.equipamentoSearchSAP = equipamentoSearchSAP;
 module.exports.db=db;
