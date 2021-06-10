@@ -79,6 +79,18 @@ function inserirLog(eq_id,estadoVida,resultadoTecnico,id_local,data,id_Sensor){
     console.log('Log Inserido');
 }
 
+function inserirLogInsercao(eq_id,sap,data){
+    db.query('INSERT INTO loginsercao (eq_id, sap, date) VALUES (?,?,?)',[eq_id,sap,data,], (error, results)=>{
+       
+        if(error){
+            console.log(error);
+        }        
+
+    }); 
+    console.log('Log Inserido');
+}
+
+
 function estadoVida(eq_id){
     return new Promise((resolve, reject) => {
         db.query('SELECT estado_Vida FROM equipamento WHERE eq_id = ?', eq_id, function(err, result) {
@@ -186,4 +198,6 @@ module.exports.getDate = getDate;
 module.exports.sapSearch = sapSearch;
 module.exports.inserirEquipamento = inserirEquipamento;
 module.exports.equipamentoSearchSAP = equipamentoSearchSAP;
+module.exports.inserirLogInsercao = inserirLogInsercao;
+
 module.exports.db=db;

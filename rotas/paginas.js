@@ -34,15 +34,16 @@ router.get("/login", (req, res) => {
     res.render("login")
 });
 
-router.get("/dashboard",verifyJWT,dashboard, (req, res) => {
-    res.render(dashboard);
+//router.get("/dashboard",verifyJWT, dashboard, (req, res) => {
+router.get("/dashboard", (req, res) => {
+    res.render("dashboard");
 });
 
-router.get("/data",verifyJWT,data, (req, res) => {
-    res.render(data);
+router.get("/data",data, (req, res) => {
+    res.render("data");
 });
 
-router.get("/adicionarEquipamento",verifyJWT, (req, res) => {
+router.get("/adicionarEquipamento", (req, res) => {
     res.render("adicionarEquipamento");
 });
 
