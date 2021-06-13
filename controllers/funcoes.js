@@ -26,6 +26,27 @@ function tecnicoSearch(rfid_id){
     })
 }
 
+function equipamentoMultiple(rfid_eq ,sap_eq,nSerie,denominacao,estadodevida){
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM Equipamento WHERE (? IS NULL OR eq_id = ?) AND (? IS NULL  OR sap = ?) AND (? IS NULL OR denominacao = ?) AND (? IS NULL OR estado_Vida = ?) AND (? IS NULL OR n_Serie = ?)', [rfid_eq,rfid_eq,sap_eq,sap_eq,denominacao,denominacao,estadodevida,estadodevida,nSerie,nSerie], function(err, result) {
+            if (err) {
+                console.log(err);
+
+                return reject(err);
+            }
+            //console.log(result);
+            //verifica se o resultado é vazio
+            //var verifica = ifExists(result);
+
+            //if(verifica == false){
+                
+                //return resolve(false);
+            //}
+            resolve(result)
+        })
+    })
+}
+
 function equipamentoSearch(eq_id){
     return new Promise((resolve, reject) => {
         db.query('SELECT eq_id FROM Equipamento WHERE eq_id = ?', eq_id, function(err, result) {
@@ -199,5 +220,5 @@ module.exports.sapSearch = sapSearch;
 module.exports.inserirEquipamento = inserirEquipamento;
 module.exports.equipamentoSearchSAP = equipamentoSearchSAP;
 module.exports.inserirLogInsercao = inserirLogInsercao;
-
+module.exports.equipamentoMultiple = equipamentoMultiple;
 module.exports.db=db;

@@ -2,6 +2,7 @@ const mysql = require("mysql");
 const jwt = require('jsonwebtoken');
 const bcrypt = require ('bcryptjs'); //hashing password
 const func = require('./funcoes')
+const fs = require('fs');
 
 
 exports.register = (req, res) => {
@@ -81,7 +82,25 @@ exports.login = async (req, res) => {
     }
 }
 
-exports.dashboard = (req, res) => {
+
+exports.dashboard = async (req, res) => {
+    const rfid_eq = req.body.rfid_eq || null;
+    const nSerie = req.body.nSerie || null;
+    const sap_eq = req.body.sap_eq || null;
+    const denominacao = req.body.denominacao || null;
+    estadodevida = req.body.estadodevida;
+    if(estadodevida == "Selecionar")
+        estadodevida = null;
+
+    console.log(rfid_eq ,nSerie,sap_eq,denominacao,estadodevida);
+
+    var data = await func.equipamentoMultiple(rfid_eq ,sap_eq,nSerie,denominacao,estadodevida);
+    //PROCURAR PELOS DADOS INSERIDOS
+    //MOSTRAR NA TABELA ABAIXO (/data)
+    var dataparsed = JSON.parse(JSON.stringify(data));
+    console.log(dataparsed);
+    //res.json(dataparsed);
+    //return res.status(201).send(dataparsed);
     return res.render('dashboard');   
     
 }
@@ -107,7 +126,7 @@ exports.data = (req, res) => {
 exports.adicionarEquipamento = async (req, res) => {
     const {sap, rfid_id} = req.body; //destructuring
 
-    console.log("SAP: "+ sap + "\nRFID: "+rfid_id);
+    console.log(req.body);
     //verificar sap na listagem
     var resultadoSAP = await func.sapSearch(sap);
     if(resultadoSAP == false){
@@ -190,5 +209,44 @@ exports.postdata = async (req, res) => {
     }
 
     res.send('Success');
-    console.log(rfid_id, eq_id, id_Sensor);
+    //console.log(rfid_id, eq_id, id_Sensor);
+}
+
+exports.movimentos = async (req, res) => {
+    
+    
+}
+
+exports.logOperacoes = async (req, res) => {
+    func.db.query('SELECT * FROM logoperacoes', (error, results)=>{
+       
+        if(error){
+            console.log(error);
+        }
+        
+        //console.log(results);
+        const data = JSON.parse(JSON.stringify(results));
+        //console.log(data);
+        return res.json(data);
+        
+
+    });
+    
+}
+
+exports.logInsercao = async (req, res) => {
+    func.db.query('SELECT * FROM loginsercao', (error, results)=>{
+       
+        if(error){
+            console.log(error);
+        }
+        
+        //console.log(results);
+        const data = JSON.parse(JSON.stringify(results));
+        //console.log(data);
+        return res.json(data);
+        
+
+    });
+    
 }

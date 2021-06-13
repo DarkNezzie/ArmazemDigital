@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 const { dashboard, adicionarEquipamento } = require('../controllers/auth');
-const { data, postdata } = require('../controllers/auth');
+const { data, postdata,logInsercao,logOperacoes } = require('../controllers/auth');
 const router = express.Router();
 dotenv.config({path: './.env'})
 
@@ -24,6 +24,7 @@ verifyJWT = (req, res, next) => {
 }
 
 router.get("/", (req, res) => {
+    
     res.render("index")
 });
 
@@ -43,8 +44,20 @@ router.get("/data",data, (req, res) => {
     res.render("data");
 });
 
-router.get("/adicionarEquipamento", (req, res) => {
+router.get("/logInsercao",logInsercao, (req, res) => {
+    res.render("logInsercao");
+});
+
+router.get("/logOperacoes",logOperacoes, (req, res) => {
+    res.render("logOperacoes");
+});
+
+router.get("/adicionarEquipamento",verifyJWT, (req, res) => {
     res.render("adicionarEquipamento");
+});
+
+router.get("/movimentos",verifyJWT, (req, res) => {
+    res.render("movimentos");
 });
 
 router.post("/postdata", postdata, (req, res) => {

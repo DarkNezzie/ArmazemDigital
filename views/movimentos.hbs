@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <title>Armazém Digital</title>
+    <link rel="stylesheet" type="text/css"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        table.dataTable thead {
+            background-color: #000000;
+            color: aliceblue;
+        }
+
+        tfoot input {
+            width: 100%;
+            padding: 3px;
+            box-sizing: border-box;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-header-group;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <h4>
+            <img src="meohome.png" alt="MeoServicosTecnicos" width="70%" height="100%" />
+        </h4>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard">Procurar Equipamentos</a></li>
+            <li><a href="/adicionarEquipamento">Adicionar Equipamento</a></li>
+            <li><a href="/movimentos">Movimentos</a></li>
+        </ul>
+    </nav>
+    <button type="button" class="btn btn-primary" id="button">Log Inserção</button>
+    <button type="button" class="btn btn-primary" id="button1">Log Operações</button>
+
+    <div class="container-fluid" style="padding: 50px">
+        <div class="row">
+            <div class="col">
+                <label id="labelInsercao" >TABELA INSERÇÃO</label>
+                <table id="tabelaInsercao" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Log ID</th>
+                            <th>RFID Equipamento</th>
+                            <th>SAP</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tfoot style="display: table-head-group;">
+                        <tr>
+                            <th>Log ID</th>
+                            <th>RFID Equipamento</th>
+                            <th>SAP</th>
+                            <th>Data</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+            <div class="row">
+                <div class="col">
+                    <label id="labelOperacoes" >TABELA OPERAÇÕES</label>
+                    <table id="tabelaOperacoes" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Log ID</th>
+                                <th>RFID Equipamento</th>
+                                <th>Estado de Vida</th>
+                                <th>Colaborador</th>
+                                <th>Local</th>
+                                <th>Data</th>
+                                <th>Sensor</th>
+                            </tr>
+                        </thead>
+                        <tfoot style="display: table-head-group;">
+                            <tr>
+                                <th>Log ID</th>
+                                <th>RFID Equipamento</th>
+                                <th>Estado de Vida</th>
+                                <th>Colaborador</th>
+                                <th>Local</th>
+                                <th>Data</th>
+                                <th>Sensor</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" language="javascript"
+        src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $('#labelInsercao').hide();
+            $('#tabelaInsercao').hide();
+            $('#button').on('click', function () {
+                $('#labelInsercao').show();
+                $('#tabelaInsercao').show();
+                $('#labelOperacoes').hide();
+                $('#tabelaOperacoes').hide();
+            });
+            $('#button1').on('click', function () {
+                $('#labelInsercao').hide();
+                $('#tabelaInsercao').hide();
+                $('#tabelaOperacoes').show();
+                $('#labelOperacoes').show();
+            });
+            $('#tabelaInsercao tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+            $('#tabelaOperacoes tfoot th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+
+            $('#tabelaInsercao').DataTable({
+                dom: 'lrtip',
+                "bPaginate": false,
+                "bInfo": false,
+                "ajax": {
+                    "url": 'http://localhost:5000/logInsercao',
+                    "dataSrc": ""
+                },
+                "columns": [
+                    { "data": "log_id" },
+                    { "data": "eq_id" },
+                    { "data": "sap" },
+                    { "data": "date" },
+                ],
+                "columnDefs": [{
+                    render(v) {
+                        return Number(v).toFixed(2)
+                    }
+                }],
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every(function () {
+                        var that = this;
+
+                        $('input', this.footer()).on('keyup change clear', function () {
+                            if (that.search() !== this.value) {
+                                that
+                                    .search(this.value)
+                                    .draw();
+                            }
+                        });
+                    });
+                }
+            });
+
+            $('#tabelaOperacoes').DataTable({
+                dom: 'lrtip',
+                "bPaginate": false,
+                "bInfo": false,
+                "ajax": {
+                    "url": 'http://localhost:5000/logOperacoes',
+                    "dataSrc": ""
+                },
+                "columns": [
+                    { "data": "log_id" },
+                    { "data": "eq_id" },
+                    { "data": "estado_Vida" },
+                    { "data": "n_Colaborador" },
+                    { "data": "id_local" },
+                    { "data": "date" },
+                    { "data": "id_Sensor" },
+                ],
+                "columnDefs": [{
+                    render(v) {
+                        return Number(v).toFixed(2)
+                    }
+                }],
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every(function () {
+                        var that = this;
+
+                        $('input', this.footer()).on('keyup change clear', function () {
+                            if (that.search() !== this.value) {
+                                that
+                                    .search(this.value)
+                                    .draw();
+                            }
+                        });
+                    });
+                }
+            });
+
+
+        });
+
+    </script>
+</body>
+
+</html>
