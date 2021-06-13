@@ -9,7 +9,7 @@ const db = mysql.createConnection({ //ip do servidor
 
 function tecnicoSearch(rfid_id){
     return new Promise((resolve, reject) => {
-        db.query('SELECT n_Colaborador FROM tecnicos WHERE rfid_id = ?', rfid_id, function(err, result) {
+        db.query('SELECT n_Colaborador FROM Tecnicos WHERE rfid_id = ?', rfid_id, function(err, result) {
             if (err) {
                 console.log(err);
 
@@ -90,7 +90,7 @@ function equipamentoSearchSAP(sap){
 }
 
 function inserirLog(eq_id,estadoVida,resultadoTecnico,id_local,data,id_Sensor){
-    db.query('INSERT INTO logoperacoes (eq_id, estado_Vida, n_Colaborador, id_local, date, id_Sensor) VALUES (?,?,?,?,?,?)',[eq_id,estadoVida,resultadoTecnico,id_local,data,id_Sensor], (error, results)=>{
+    db.query('INSERT INTO LogOperacoes (eq_id, estado_Vida, n_Colaborador, id_local, date, id_Sensor) VALUES (?,?,?,?,?,?)',[eq_id,estadoVida,resultadoTecnico,id_local,data,id_Sensor], (error, results)=>{
        
         if(error){
             console.log(error);
@@ -101,7 +101,7 @@ function inserirLog(eq_id,estadoVida,resultadoTecnico,id_local,data,id_Sensor){
 }
 
 function inserirLogInsercao(eq_id,sap,data){
-    db.query('INSERT INTO loginsercao (eq_id, sap, date) VALUES (?,?,?)',[eq_id,sap,data,], (error, results)=>{
+    db.query('INSERT INTO LogInsercao (eq_id, sap, date) VALUES (?,?,?)',[eq_id,sap,data,], (error, results)=>{
        
         if(error){
             console.log(error);
@@ -114,7 +114,7 @@ function inserirLogInsercao(eq_id,sap,data){
 
 function estadoVida(eq_id){
     return new Promise((resolve, reject) => {
-        db.query('SELECT estado_Vida FROM equipamento WHERE eq_id = ?', eq_id, function(err, result) {
+        db.query('SELECT estado_Vida FROM Equipamento WHERE eq_id = ?', eq_id, function(err, result) {
             if (err) {
                 console.log(err);
                 return reject(err);
@@ -127,7 +127,7 @@ function estadoVida(eq_id){
 
 function updateEVEquipamento(value,eq_id){
     return new Promise((resolve, reject) => {
-        db.query('UPDATE equipamento SET estado_Vida = ? WHERE eq_id = ?', [value,eq_id], function(err, result) {
+        db.query('UPDATE Equipamento SET estado_Vida = ? WHERE eq_id = ?', [value,eq_id], function(err, result) {
             if (err) {
                 console.log(err);
                 return reject(err);
@@ -141,7 +141,7 @@ function updateEVEquipamento(value,eq_id){
 
 function updateLocalEquipamento(id_local,eq_id){
     return new Promise((resolve, reject) => {
-        db.query('UPDATE equipamento SET id_local = ? WHERE eq_id = ?', [id_local,eq_id], function(err, result) {
+        db.query('UPDATE Equipamento SET id_local = ? WHERE eq_id = ?', [id_local,eq_id], function(err, result) {
             if (err) {
                 console.log(err);
                 return reject(err);

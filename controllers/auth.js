@@ -107,7 +107,7 @@ exports.dashboard = async (req, res) => {
 
 exports.data = (req, res) => {
 
-    func.db.query('SELECT equipamento.eq_id, equipamento.sap, equipamento.denominacao, equipamento.classe, equipamento.sub_Classe,estadovidahelper.descricao , equipamento.n_Serie,armazem.local  FROM equipamento INNER JOIN estadovidahelper ON equipamento.estado_Vida=estadovidahelper.bool_id INNER JOIN armazem ON equipamento.id_local=armazem.id_local', (error, results)=>{
+    func.db.query('SELECT Equipamento.eq_id, Equipamento.sap, Equipamento.denominacao, Equipamento.classe, Equipamento.sub_Classe,EstadoVidaHelper.descricao , Equipamento.n_Serie,Armazem.local  FROM Equipamento INNER JOIN EstadoVidaHelper ON Equipamento.estado_Vida=EstadoVidaHelper.bool_id INNER JOIN Armazem ON Equipamento.id_local=Armazem.id_local', (error, results)=>{
        
         if(error){
             console.log(error);
@@ -218,7 +218,7 @@ exports.movimentos = async (req, res) => {
 }
 
 exports.logOperacoes = async (req, res) => {
-    func.db.query('SELECT * FROM logoperacoes', (error, results)=>{
+    func.db.query('SELECT * FROM LogOperacoes', (error, results)=>{
        
         if(error){
             console.log(error);
@@ -235,7 +235,7 @@ exports.logOperacoes = async (req, res) => {
 }
 
 exports.logInsercao = async (req, res) => {
-    func.db.query('SELECT * FROM loginsercao', (error, results)=>{
+    func.db.query('SELECT * FROM LogInsercao', (error, results)=>{
        
         if(error){
             console.log(error);
