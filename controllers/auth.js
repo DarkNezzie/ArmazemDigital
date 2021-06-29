@@ -170,43 +170,73 @@ exports.postdata = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     var i;
     const {rfid_id, eq_id,id_Sensor,id_local} = req.body; //destructuring 
-
+    console.log(typeof eq_id);
+    console.log(eq_id);
     //procurar na base de dados se existem equipamentos
-    for (i = 0; i < eq_id.length; i++) {
-        var resultadoEquipamento = await func.equipamentoSearch(eq_id[i]);
+    if(typeof eq_id === 'string'){
+        var resultadoEquipamento = await func.equipamentoSearch(eq_id);
         if(resultadoEquipamento == false){
             res.end('ERRO');
-            console.log('Erro');
+            console.log('Erro equipamentos');
             return 0;
         }
+    }else{
+        for (i = 0; i < eq_id.length; i++) {
+            var resultadoEquipamento = await func.equipamentoSearch(eq_id[i]);
+            if(resultadoEquipamento == false){
+                res.end('ERRO');
+                console.log('Erro equipamentos');
+                return 0;
+            }
+        }
     }
+    
     //procurar na base de dados se existe o técnico
     var resultadoTecnico = await func.tecnicoSearch(rfid_id);
     
     //Se houver algum erro a função retorna
     if(resultadoTecnico == false){
         res.end('ERRO');
-        console.log('Erro');
+        console.log('Erro tecnico');
         return 0;
     }
     var nColaborador = JSON.parse(JSON.stringify(resultadoTecnico[0].n_Colaborador));
 
     //verifica qual o estado de vida
-    for (i = 0; i < eq_id.length; i++) {
-        var resultadoEstado = await func.estadoVida(eq_id[i]);       
+    if(typeof eq_id === 'string'){
+        var resultadoEstado = await func.estadoVida(eq_id);       
         var estadoVida = JSON.parse(JSON.stringify(resultadoEstado[0].estado_Vida));
         
         estadoVida = 1 - estadoVida;   
         //se o estado de vida for 1 (esta a entrar no armazem) temos que colocar uma localização nova
         if(estadoVida == 1){
-            func.updateLocalEquipamento(id_local,eq_id[i]);
+            func.updateLocalEquipamento(id_local,eq_id);
         }
         //update do estado de vida do equipamento
-        func.updateEVEquipamento(estadoVida,eq_id[i]);
+        func.updateEVEquipamento(estadoVida,eq_id);
         //data de hoje
         var data = func.getDate();
-        func.inserirLog(eq_id[i],estadoVida,nColaborador,id_local,data,id_Sensor);
+        func.inserirLog(eq_id,estadoVida,nColaborador,id_local,data,id_Sensor);
+
+    }else{
+        for (i = 0; i < eq_id.length; i++) {
+            var resultadoEstado = await func.estadoVida(eq_id[i]);       
+            var estadoVida = JSON.parse(JSON.stringify(resultadoEstado[0].estado_Vida));
+            
+            estadoVida = 1 - estadoVida;   
+            //se o estado de vida for 1 (esta a entrar no armazem) temos que colocar uma localização nova
+            if(estadoVida == 1){
+                func.updateLocalEquipamento(id_local,eq_id[i]);
+            }
+            //update do estado de vida do equipamento
+            func.updateEVEquipamento(estadoVida,eq_id[i]);
+            //data de hoje
+            var data = func.getDate();
+            func.inserirLog(eq_id[i],estadoVida,nColaborador,id_local,data,id_Sensor);
+        }
+
     }
+    
 
     res.send('Success');
     //console.log(rfid_id, eq_id, id_Sensor);
