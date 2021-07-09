@@ -36,19 +36,19 @@ router.get("/login", (req, res) => {
 });
 
 //router.get("/dashboard",verifyJWT, dashboard, (req, res) => {
-router.get("/dashboard", (req, res) => {
+router.get("/dashboard",verifyJWT, (req, res) => {
     res.render("dashboard");
 });
 
-router.get("/data",data, (req, res) => {
+router.get("/data",data, verifyJWT,(req, res) => {
     res.render("data");
 });
 
-router.get("/logInsercao",logInsercao, (req, res) => {
+router.get("/logInsercao",logInsercao,verifyJWT, (req, res) => {
     res.render("logInsercao");
 });
 
-router.get("/logOperacoes",logOperacoes, (req, res) => {
+router.get("/logOperacoes",logOperacoes, verifyJWT,(req, res) => {
     res.render("logOperacoes");
 });
 
@@ -60,7 +60,7 @@ router.get("/movimentos",verifyJWT, (req, res) => {
     res.render("movimentos");
 });
 
-router.post("/postdata", postdata, (req, res) => {
+router.post("/postdata", postdata,verifyJWT, (req, res) => {
     res.render(postdata);
 });
 

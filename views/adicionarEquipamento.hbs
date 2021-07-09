@@ -14,6 +14,12 @@
             background-color: #000000;
             color: aliceblue;
         }
+        h1 {
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            margin-top:40px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -23,14 +29,14 @@
             <img src="meohome.png" alt="MeoServicosTecnicos"width="70%" height="100%" />
         </h4>
         <ul>
-            <li><a href="/">Home</a></li>
             <li><a href="/dashboard">Procurar Equipamentos</a></li>
             <li><a href="/adicionarEquipamento">Adicionar Equipamento</a></li>
             <li><a href="/movimentos">Movimentos</a></li>
         </ul>
     </nav>
+    <h1>Adicionar Equipamentos</h1>
     <form action="/auth/adicionarEquipamento " method="POST">
-        <div class="container bg-light my-4">
+        <div class="container my-4">
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="sap" class="form-label">SAP</label>

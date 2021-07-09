@@ -248,7 +248,7 @@ exports.movimentos = async (req, res) => {
 }
 
 exports.logOperacoes = async (req, res) => {
-    func.db.query('SELECT * FROM LogOperacoes', (error, results)=>{
+    func.db.query('SELECT LogOperacoes.log_id, LogOperacoes.eq_id, EstadoVidaHelper.descricao, LogOperacoes.n_Colaborador, Armazem.local, LogOperacoes.date, Sensores.tipo FROM LogOperacoes INNER JOIN EstadoVidaHelper ON LogOperacoes.estado_Vida = EstadoVidaHelper.bool_id INNER JOIN Armazem ON LogOperacoes.id_local = Armazem.id_local INNER JOIN Sensores ON Sensores.id_Sensor = LogOperacoes.id_Sensor', (error, results)=>{
        
         if(error){
             console.log(error);
@@ -256,7 +256,7 @@ exports.logOperacoes = async (req, res) => {
         
         //console.log(results);
         const data = JSON.parse(JSON.stringify(results));
-        //console.log(data);
+        data.forEach((item)=> item.date = (item.date).split('T')[0]);
         return res.json(data);
         
 
@@ -274,6 +274,7 @@ exports.logInsercao = async (req, res) => {
         //console.log(results);
         const data = JSON.parse(JSON.stringify(results));
         //console.log(data);
+        data.forEach((item)=> item.date = (item.date).split('T')[0]);
         return res.json(data);
         
 
